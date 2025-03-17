@@ -14,7 +14,8 @@ if uploaded_file:
         
         # Process
         files = {"file": uploaded_file.getvalue()}
-        response = requests.post("http://localhost:8000/process-image/", files=files)
+        # response = requests.post("http://localhost:8000/process-image/", files=files)
+        response = requests.post("https://utkarsh134-fastapi-img2csv.hf.space/process-image/", files=files)
         
         if response.status_code == 200:
             st.success("Processing complete!")
