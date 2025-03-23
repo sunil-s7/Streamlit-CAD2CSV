@@ -125,17 +125,19 @@ col1, col2 = st.columns(2)
 with col1:
     gold_markup_type = st.radio(
         "Gold Markup Type",
-        ["percentage", "fixed"],
+        ["percentage", "fixed", "times"],  # Added "times" option
         horizontal=True,
-        index=0 if st.session_state.gold_markup_type == "percentage" else 1,
+        index=0 if st.session_state.gold_markup_type == "percentage" else 
+              1 if st.session_state.gold_markup_type == "fixed" else 2,
         key="gold_markup_type_radio",
         on_change=update_gold_markup_type
     )
     st.session_state.gold_markup_type = gold_markup_type
 
 with col2:
+    suffix = '+%' if gold_markup_type == 'percentage' else ('+$' if gold_markup_type == 'fixed' else 'x')
     gold_markup_value_str = st.text_input(
-        f"Gold Markup Value ({'+%' if gold_markup_type == 'percentage' else '+$'})",
+        f"Gold Markup Value ({suffix})",
         key="gold_markup_value_input"
     )
     st.session_state.gold_markup_value = update_markup_value("gold", gold_markup_value_str)
@@ -145,17 +147,19 @@ col1, col2 = st.columns(2)
 with col1:
     platinum_markup_type = st.radio(
         "Platinum Markup Type",
-        ["percentage", "fixed"],
+        ["percentage", "fixed", "times"],
         horizontal=True,
-        index=0 if st.session_state.platinum_markup_type == "percentage" else 1,
+        index=0 if st.session_state.platinum_markup_type == "percentage" else 
+              1 if st.session_state.platinum_markup_type == "fixed" else 2,
         key="platinum_markup_type_radio",
         on_change=update_platinum_markup_type
     )
     st.session_state.platinum_markup_type = platinum_markup_type
 
 with col2:
+    suffix = '+%' if platinum_markup_type == 'percentage' else ('+$' if platinum_markup_type == 'fixed' else 'x')
     platinum_markup_value_str = st.text_input(
-        f"Platinum Markup Value ({'+%' if platinum_markup_type == 'percentage' else '+$'})",
+        f"Platinum Markup Value ({suffix})",
         key="platinum_markup_value_input"
     )
     st.session_state.platinum_markup_value = update_markup_value("platinum", platinum_markup_value_str)
@@ -165,17 +169,19 @@ col1, col2 = st.columns(2)
 with col1:
     diamond_markup_type = st.radio(
         "Diamond Markup Type",
-        ["percentage", "fixed"],
+        ["percentage", "fixed", "times"],
         horizontal=True,
-        index=0 if st.session_state.diamond_markup_type == "percentage" else 1,
+        index=0 if st.session_state.diamond_markup_type == "percentage" else 
+              1 if st.session_state.diamond_markup_type == "fixed" else 2,
         key="diamond_markup_type_radio",
         on_change=update_diamond_markup_type
     )
     st.session_state.diamond_markup_type = diamond_markup_type
 
 with col2:
+    suffix = '+%' if diamond_markup_type == 'percentage' else ('+$' if diamond_markup_type == 'fixed' else 'x')
     diamond_markup_value_str = st.text_input(
-        f"Diamond Markup Value ({'+%' if diamond_markup_type == 'percentage' else '+$'})",
+        f"Diamond Markup Value ({suffix})",
         key="diamond_markup_value_input"
     )
     st.session_state.diamond_markup_value = update_markup_value("diamond", diamond_markup_value_str)
@@ -185,17 +191,19 @@ col1, col2 = st.columns(2)
 with col1:
     finding_markup_type = st.radio(
         "Finding Markup Type",
-        ["percentage", "fixed"],
+        ["percentage", "fixed", "times"],
         horizontal=True,
-        index=0 if st.session_state.finding_markup_type == "percentage" else 1,
+        index=0 if st.session_state.finding_markup_type == "percentage" else 
+              1 if st.session_state.finding_markup_type == "fixed" else 2,
         key="finding_markup_type_radio",
         on_change=update_finding_markup_type
     )
     st.session_state.finding_markup_type = finding_markup_type
 
 with col2:
+    suffix = '+%' if finding_markup_type == 'percentage' else ('+$' if finding_markup_type == 'fixed' else 'x')
     finding_markup_value_str = st.text_input(
-        f"Finding Markup Value ({'+%' if finding_markup_type == 'percentage' else '+$'})",
+        f"Finding Markup Value ({suffix})",
         key="finding_markup_value_input"
     )
     st.session_state.finding_markup_value = update_markup_value("finding", finding_markup_value_str)
@@ -301,7 +309,7 @@ if st.session_state.diamonds:
                     
                     try:
                         response = requests.post(
-                            "https://utkarsh134-fastapi-img2csv.hf.space/process-image/",
+                            "https://utkarsh134-fastapi-img2csv.hf.space//process-image/",
                             files=files,
                             data=data
                         )
