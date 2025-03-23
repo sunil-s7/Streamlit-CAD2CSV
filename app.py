@@ -105,7 +105,7 @@ if submit_image and uploaded_file:
         files = {"file": uploaded_file.getvalue()}
         try:
             response = requests.post(
-                "http://localhost:8000/extract-diamonds/",
+                "https://utkarsh134-fastapi-img2csv.hf.space//extract-diamonds/",
                 files=files
             )
             
@@ -301,7 +301,7 @@ if st.session_state.diamonds:
                     
                     try:
                         response = requests.post(
-                            "http://localhost:8000/process-image/",
+                            "https://utkarsh134-fastapi-img2csv.hf.space/process-image/",
                             files=files,
                             data=data
                         )
