@@ -92,6 +92,10 @@ def update_markup_value(markup_type, value_str):
         st.error(f"Please enter a valid number for {markup_type} markup")
         return 0.0
 
+# Add this after the initial session state declarations
+if 'accessory_type' not in st.session_state:
+    st.session_state.accessory_type = "pendant"
+
 # Initial form - only for image upload
 with st.form("data_form"):
     uploaded_file = st.file_uploader("Upload CAD Image", type=["png", "jpg", "jpeg"])
@@ -105,7 +109,7 @@ if submit_image and uploaded_file:
         files = {"file": uploaded_file.getvalue()}
         try:
             response = requests.post(
-                "https://utkarsh134-fastapi-img2csv.hf.space//extract-diamonds/",
+                "http://localhost:8000/extract-diamonds/",
                 files=files
             )
             
@@ -118,6 +122,15 @@ if submit_image and uploaded_file:
             st.error("Could not connect to the server. Please ensure the FastAPI server is running.")
 
 # First display markup settings
+st.subheader("Accessory Type")
+accessory_type = st.radio(
+    "Select Accessory Type",
+    ["pendant", "ringband", "earring"],  # Add earring option
+    horizontal=True,
+    key="accessory_type_radio"
+)
+st.session_state.accessory_type = accessory_type
+
 st.subheader("Markup Settings")
 
 # Gold Markup
@@ -215,11 +228,28 @@ if st.session_state.diamonds:
     with st.form("diamond_rates_form"):
         # Add finding values section
         st.subheader("Finding Values")
+        finding_labels = {
+            "pendant": {
+                "14kt": "Finding For Gold 14KT",
+                "18kt": "Finding For Gold 18KT",
+                "plt": "Finding for Plt."
+            },
+            "ringband": {
+                "14kt": "CFP for Gold 14KT",
+                "18kt": "CFP for Gold 18KT",
+                "plt": "CFP for Plt."
+            },
+            "earring": {
+                "14kt": "Finding & CFP  For Gold 14KT",
+                "18kt": "Finding For Gold 18KT",
+                "plt": "Finding for Plt."
+            }
+        }
         col1, col2, col3 = st.columns(3)
         with col1:
             finding_14kt_str = st.text_input(
-                "Finding For Gold 14KT",
-                placeholder="Enter finding for 14KT"
+                finding_labels[accessory_type]["14kt"],
+                placeholder=f"Enter {finding_labels[accessory_type]['14kt']}"
             )
             try:
                 finding_14kt = float(finding_14kt_str) if finding_14kt_str else 0.0
@@ -232,8 +262,8 @@ if st.session_state.diamonds:
                 
         with col2:
             finding_18kt_str = st.text_input(
-                "Finding For Gold 18KT",
-                placeholder="Enter finding for 18KT"
+                finding_labels[accessory_type]["18kt"],
+                placeholder=f"Enter {finding_labels[accessory_type]['18kt']}"
             )
             try:
                 finding_18kt = float(finding_18kt_str) if finding_18kt_str else 0.0
@@ -246,8 +276,8 @@ if st.session_state.diamonds:
                 
         with col3:
             finding_plt_str = st.text_input(
-                "Finding for Plt.",
-                placeholder="Enter finding for Plt"
+                finding_labels[accessory_type]["plt"],
+                placeholder=f"Enter {finding_labels[accessory_type]['plt']}"
             )
             try:
                 finding_plt = float(finding_plt_str) if finding_plt_str else 0.0
@@ -293,6 +323,7 @@ if st.session_state.diamonds:
                     files = {"file": uploaded_file.getvalue()}
                     
                     data = {
+                        "accessory_type": st.session_state.accessory_type,
                         "finding_14kt": finding_14kt,
                         "finding_18kt": finding_18kt,
                         "finding_plt": finding_plt,
@@ -309,7 +340,7 @@ if st.session_state.diamonds:
                     
                     try:
                         response = requests.post(
-                            "https://utkarsh134-fastapi-img2csv.hf.space//process-image/",
+                            "http://localhost:8000/process-image/",
                             files=files,
                             data=data
                         )
