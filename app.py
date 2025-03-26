@@ -14,22 +14,31 @@ with st.sidebar:
         * Upload your CAD image
         * Click on "Extract Data"
     
-    2. **Fill Values**
-        * Each field needs to be filled individually
-        * Click on each input field and enter the required value
-        * Ensure all fields are properly filled
+    2. **Select Accessory Type**
+        * Choose from: Pendant, Ringband, Earring, Bracelet, or Necklace
+        * Each type has specific calculations
     
-    3. **Process Data**
+    3. **Fill Values**
+        * Each field needs to be filled individually
+        * For Bracelet and Necklace:
+            * Uses CFP instead of Finding values
+            * Setting is calculated automatically per diamond
+            * No labour costs included
+        * For other accessories:
+            * Standard finding and labour calculations apply
+    
+    4. **Process Data**
         * After filling all fields
         * Click on "Process with Diamond Rates"
     
-    4. **Download Results**
+    5. **Download Results**
         * Once processing is complete
         * Click on "Download CSV" to get your file
     
     ### Important Notes:
     * All fields must be filled before submission
     * Values should be numeric
+    * Bracelet and Necklace calculations differ from other accessories
     * Wait for each step to complete before proceeding
     """)
 
@@ -125,7 +134,7 @@ if submit_image and uploaded_file:
 st.subheader("Accessory Type")
 accessory_type = st.radio(
     "Select Accessory Type",
-    ["pendant", "ringband", "earring"],  # Add earring option
+    ["pendant", "ringband", "earring", "bracelet", "necklace"],  # Added necklace
     horizontal=True,
     key="accessory_type_radio"
 )
@@ -240,9 +249,19 @@ if st.session_state.diamonds:
                 "plt": "CFP for Plt."
             },
             "earring": {
-                "14kt": "Finding & CFP  For Gold 14KT",
+                "14kt": "Finding & CFP For Gold 14KT",
                 "18kt": "Finding For Gold 18KT",
                 "plt": "Finding for Plt."
+            },
+            "bracelet": {
+                "14kt": "CFP For Gold 14KT",
+                "18kt": "CFP For Gold 18KT",
+                "plt": "CFP For Gold PLT"
+            },
+            "necklace": {
+                "14kt": "CFP For Gold 14KT",
+                "18kt": "CFP For Gold 18KT",
+                "plt": "CFP For Gold PLT"
             }
         }
         col1, col2, col3 = st.columns(3)
